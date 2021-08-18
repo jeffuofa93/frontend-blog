@@ -1,4 +1,4 @@
-import { Box, Heading, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
@@ -7,6 +7,8 @@ import Blogs from "./components/Blogs";
 import loginService from "./services/loginService";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
+import Logout from "./components/Logout";
+import AddBlog from "./components/AddBlog";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,13 +16,20 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
+  const [newBlog, setNewBlog] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+  const [color, setColor] = useState("red");
+  const localStorageKey = "loggedBlogappUser";
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
+    const loggedUserJSON = window.localStorage.getItem(localStorageKey);
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -33,16 +42,41 @@ const App = () => {
     console.log("logging in with", username);
     try {
       const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
+      window.localStorage.setItem(localStorageKey, JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      handleErrorMessageChange("Wrong Credentials", "red");
+    }
+  };
+
+  const handleErrorMessageChange = (newMessage, color) => {
+    setErrorMessage(newMessage);
+    setColor(color);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+  };
+
+  const addBlog = async (event) => {
+    event.preventDefault();
+    const blogObject = {
+      title: newBlog.title,
+      author: newBlog.author,
+      url: newBlog.url,
+    };
+    try {
+      const returnedBlog = await blogService.create(blogObject);
+      setBlogs(blogs.concat(returnedBlog));
+      setNewBlog({ title: "", author: "", url: "" });
+      handleErrorMessageChange(
+        `New Blog! ${returnedBlog.title} by ${returnedBlog.author} added`,
+        "green"
+      );
+    } catch (exception) {
+      handleErrorMessageChange("Cannot post blog", "red");
     }
   };
 
@@ -55,6 +89,18 @@ const App = () => {
       setUsername={setUsername}
     />
   );
+
+  const handleLogout = () => {
+    window.localStorage.removeItem(localStorageKey);
+    setUser("");
+  };
+
+  const handleBlogChange = (event) => {
+    const value = event.target.value;
+    setNewBlog({ ...newBlog, [event.target.name]: value });
+  };
+
+  console.log(newBlog);
 
   if (user === "") {
     return (
@@ -69,7 +115,7 @@ const App = () => {
         >
           Blogs
         </Heading>
-        <Notification message={errorMessage} />
+        <Notification message={errorMessage} color={color} />
         {loginForm()}
       </VStack>
     );
@@ -87,10 +133,13 @@ const App = () => {
       >
         Blogs
       </Heading>
-      <Notification message={errorMessage} />
-      <Box w="40vw" p={4} textAlign="center">
-        {user.name} logged-in
-      </Box>
+      <Notification message={errorMessage} color={color} />
+      <Logout user={user} handleLogout={handleLogout} />
+      <AddBlog
+        addBlog={addBlog}
+        handleBlogChange={handleBlogChange}
+        newBlog={newBlog}
+      />
       <Blogs blogs={blogs} />
     </VStack>
   );

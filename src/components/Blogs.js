@@ -1,15 +1,5 @@
-import {
-  Box,
-  Divider,
-  HStack,
-  IconButton,
-  Spacer,
-  StackDivider,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, StackDivider, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { BiShow } from "react-icons/all";
 
 const Blogs = ({ blogs }) => {
   return (
@@ -24,18 +14,24 @@ const Blogs = ({ blogs }) => {
       alignItems="strech"
       justifySelf={"center"}
     >
-      {blogs.map(blog => (
+      {blogs.map((blog) => (
         <VStack key={blog.id} justifySelf={"left"} alignItems={"left"}>
           <Box>
             <Text>
               {" "}
-              <b>Author</b>: {blog.author}
+              <b>Blog Title:</b> {blog.title}
             </Text>
           </Box>
           <Box>
             <Text>
               {" "}
-              <b>Title:</b> {blog.title}
+              <b>URL:</b> {blog.url}
+            </Text>
+          </Box>
+          <Box>
+            <Text>
+              {" "}
+              <b>Author</b>: {blog.author}
             </Text>
           </Box>
           {/*<IconButton aria-label="temp" icon={<BiShow />} isRound="true" />*/}
