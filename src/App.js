@@ -1,4 +1,4 @@
-import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Heading, VStack } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";

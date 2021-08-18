@@ -1,4 +1,5 @@
-import { Box, StackDivider, Text, VStack } from "@chakra-ui/react";
+import { Box, Link, StackDivider, Text, VStack } from "@chakra-ui/react";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import React from "react";
 
 const Blogs = ({ blogs }) => {
@@ -25,16 +26,18 @@ const Blogs = ({ blogs }) => {
           <Box>
             <Text>
               {" "}
-              <b>URL:</b> {blog.url}
+              <b>Author</b>: {blog.author}
             </Text>
           </Box>
           <Box>
             <Text>
               {" "}
-              <b>Author</b>: {blog.author}
+              <b>URL:</b>{" "}
+              <Link href={blog.url} isExternal>
+                <ExternalLinkIcon mx={"2px"} />
+              </Link>
             </Text>
           </Box>
-          {/*<IconButton aria-label="temp" icon={<BiShow />} isRound="true" />*/}
         </VStack>
       ))}
     </VStack>
