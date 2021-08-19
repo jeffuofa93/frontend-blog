@@ -10,7 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { FaArrowUp, FaTrash } from "react-icons/all";
+import { FaArrowUp } from "react-icons/all";
 import AlertButton from "./AlertButton";
 
 const ToggleBlog = (props) => {
@@ -64,11 +64,6 @@ const ToggleBlog = (props) => {
             </Text>
           </Box>
           <Box>
-            {/*<IconButton*/}
-            {/*  aria-label="temp"*/}
-            {/*  icon={<FaTrash />}*/}
-            {/*  onClick={() => props.handleDeleteClick(props.blog)}*/}
-            {/*/>*/}
             <AlertButton
               blog={props.blog}
               handleDeleteClick={props.handleDeleteClick}

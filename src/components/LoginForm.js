@@ -6,8 +6,6 @@ import {
   InputLeftAddon,
   VStack,
 } from "@chakra-ui/react";
-import loginService from "../services/loginService";
-import blogService from "../services/blogService";
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState("");

@@ -1,38 +1,47 @@
 import React, { useImperativeHandle } from "react";
 import { Button, VStack } from "@chakra-ui/react";
+import PropTypes from "prop-types";
 
-const Togglable = React.forwardRef((props, ref) => {
-  // const [visible, setVisible] = useState(false);
+const Togglable = React.forwardRef(
+  ({ buttonLabel, children, setVisible, visible }, ref) => {
+    // const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: props.visible ? "none" : "" };
-  const showWhenVisible = { display: props.visible ? "" : "none" };
+    Togglable.propTypes = {
+      buttonLabel: PropTypes.string.isRequired,
+    };
 
-  const toggleVisibility = () => {
-    props.setVisible(!props.visible);
-  };
+    const hideWhenVisible = { display: visible ? "none" : "" };
+    const showWhenVisible = { display: visible ? "" : "none" };
 
-  useImperativeHandle(ref, () => {
-    return { toggleVisibility };
-  });
+    const toggleVisibility = () => {
+      setVisible(!visible);
+    };
 
-  return (
-    <VStack>
-      <div style={hideWhenVisible}>
-        <Button onClick={toggleVisibility}>{props.buttonLabel}</Button>
-      </div>
-      <div style={showWhenVisible} align={"center"}>
-        {props.children}
-        <Button
-          onClick={toggleVisibility}
-          colorScheme={"pink"}
-          px={8}
-          alignSelf={"left"}
-        >
-          cancel
-        </Button>
-      </div>
-    </VStack>
-  );
-});
+    useImperativeHandle(ref, () => {
+      return { toggleVisibility };
+    });
+
+    return (
+      <VStack>
+        <div style={hideWhenVisible}>
+          <Button onClick={toggleVisibility}>{buttonLabel}</Button>
+        </div>
+        <div style={showWhenVisible} align={"center"}>
+          {children}
+          <Button
+            onClick={toggleVisibility}
+            colorScheme={"pink"}
+            px={8}
+            alignSelf={"left"}
+          >
+            cancel
+          </Button>
+        </div>
+      </VStack>
+    );
+  }
+);
+
+Togglable.displayName = "Togglable";
 
 export default Togglable;

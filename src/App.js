@@ -10,7 +10,6 @@ import LoginForm from "./components/LoginForm";
 import Logout from "./components/Logout";
 import AddBlog from "./components/AddBlog";
 import Toggleable from "./components/Toggleable";
-import userService from "./services/userService";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -70,6 +69,10 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject);
       const updatedBlogs = await blogService.getAll();
       setBlogs(updatedBlogs);
+      handleErrorMessageChange(
+        `New Blog! ${returnedBlog.title} by ${returnedBlog.author} added`,
+        "green"
+      );
     } catch (exception) {
       handleErrorMessageChange("Cannot post blog", "red");
     }
@@ -83,7 +86,7 @@ const App = () => {
   const handleDeleteClick = async (deleteBlog) => {
     // if (!window.confirm(`Delete ${deleteBlog.name}?`)) return;
     try {
-      const isDeleted = await blogService.remove(deleteBlog.id);
+      await blogService.remove(deleteBlog.id);
       setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
     } catch (exception) {
       handleErrorMessageChange("Error deleting blog", "red");
