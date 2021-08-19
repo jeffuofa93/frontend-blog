@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Input,
@@ -7,7 +7,29 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-const AddBlog = ({ newBlog, addBlog, handleBlogChange }) => {
+const AddBlog = ({ createBlog }) => {
+  const [newBlog, setNewBlog] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+
+  const handleBlogChange = (event) => {
+    const value = event.target.value;
+    setNewBlog({ ...newBlog, [event.target.name]: value });
+  };
+
+  const addBlog = async (event) => {
+    event.preventDefault();
+    createBlog({
+      title: newBlog.title,
+      author: newBlog.author,
+      url: newBlog.url,
+    });
+
+    setNewBlog({ title: "", author: "", url: "" });
+  };
+
   return (
     <form onSubmit={addBlog}>
       <VStack p={8} spacing={4}>

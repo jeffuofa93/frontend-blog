@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Input,
@@ -6,14 +6,22 @@ import {
   InputLeftAddon,
   VStack,
 } from "@chakra-ui/react";
+import loginService from "../services/loginService";
+import blogService from "../services/blogService";
 
-const LoginForm = ({
-  setUsername,
-  username,
-  handleLogin,
-  password,
-  setPassword,
-}) => {
+const LoginForm = (props) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    console.log("logging in with", username);
+    const user = await props.attemptLogin({ username, password });
+    if (user) {
+      setUsername("");
+      setPassword("");
+    }
+  };
   return (
     <form onSubmit={handleLogin}>
       <VStack spacing={4}>

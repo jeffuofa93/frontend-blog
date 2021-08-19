@@ -1,6 +1,6 @@
 import { Heading, VStack } from "@chakra-ui/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
 import blogService from "./services/blogService";
 import Blogs from "./components/Blogs";
@@ -9,19 +9,16 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Logout from "./components/Logout";
 import AddBlog from "./components/AddBlog";
+import Toggleable from "./components/Toggleable";
+import userService from "./services/userService";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
-  const [newBlog, setNewBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
   const [color, setColor] = useState("red");
+  const [visible, setVisible] = useState(false);
+  const blogFormRef = useRef();
   const localStorageKey = "loggedBlogappUser";
 
   useEffect(() => {
@@ -37,16 +34,12 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with", username);
+  const attemptLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem(localStorageKey, JSON.stringify(user));
-      blogService.setToken(user.token);
       setUser(user);
-      setUsername("");
-      setPassword("");
+      blogService.setToken(user.token);
     } catch (exception) {
       handleErrorMessageChange("Wrong Credentials", "red");
     }
@@ -60,47 +53,46 @@ const App = () => {
     }, 5000);
   };
 
-  const addBlog = async (event) => {
-    event.preventDefault();
-    const blogObject = {
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
-    };
+  const increaseLikes = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    try {
+      const returnedBlog = await blogService.update(id, updatedBlog);
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+    } catch (exception) {
+      handleErrorMessageChange("Error updating blog", "red");
+    }
+  };
+
+  const createBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility();
     try {
       const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
-      setNewBlog({ title: "", author: "", url: "" });
-      handleErrorMessageChange(
-        `New Blog! ${returnedBlog.title} by ${returnedBlog.author} added`,
-        "green"
-      );
+      const updatedBlogs = await blogService.getAll();
+      setBlogs(updatedBlogs);
     } catch (exception) {
       handleErrorMessageChange("Cannot post blog", "red");
     }
   };
-
-  const loginForm = () => (
-    <LoginForm
-      password={password}
-      handleLogin={handleLogin}
-      setPassword={setPassword}
-      username={username}
-      setUsername={setUsername}
-    />
-  );
 
   const handleLogout = () => {
     window.localStorage.removeItem(localStorageKey);
     setUser("");
   };
 
-  const handleBlogChange = (event) => {
-    const value = event.target.value;
-    setNewBlog({ ...newBlog, [event.target.name]: value });
+  const handleDeleteClick = async (deleteBlog) => {
+    // if (!window.confirm(`Delete ${deleteBlog.name}?`)) return;
+    try {
+      const isDeleted = await blogService.remove(deleteBlog.id);
+      setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
+    } catch (exception) {
+      handleErrorMessageChange("Error deleting blog", "red");
+    }
   };
 
-  console.log(newBlog);
+  const sortedBlogs = blogs.sort((firstBlog, secondBlog) => {
+    return secondBlog.likes - firstBlog.likes;
+  });
 
   if (user === "") {
     return (
@@ -116,7 +108,7 @@ const App = () => {
           Blogs
         </Heading>
         <Notification message={errorMessage} color={color} />
-        {loginForm()}
+        <LoginForm attemptLogin={attemptLogin} />
       </VStack>
     );
   }
@@ -135,43 +127,25 @@ const App = () => {
       </Heading>
       <Notification message={errorMessage} color={color} />
       <Logout user={user} handleLogout={handleLogout} />
-      <AddBlog
-        addBlog={addBlog}
-        handleBlogChange={handleBlogChange}
-        newBlog={newBlog}
-      />
-      <Blogs blogs={blogs} />
+      <Toggleable
+        buttonLabel={"create blog"}
+        visible={visible}
+        setVisible={setVisible}
+        ref={blogFormRef}
+      >
+        <AddBlog createBlog={createBlog} />
+      </Toggleable>
+      {visible ? (
+        ""
+      ) : (
+        <Blogs
+          blogs={sortedBlogs}
+          increaseLikes={increaseLikes}
+          handleDeleteClick={handleDeleteClick}
+        />
+      )}
     </VStack>
   );
 };
 
 export default App;
-
-/*
-function App() {
-  return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
-  );
-}
- */

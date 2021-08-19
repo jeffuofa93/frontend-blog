@@ -1,8 +1,8 @@
-import { Box, Link, StackDivider, Text, VStack } from "@chakra-ui/react";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { StackDivider, VStack } from "@chakra-ui/react";
 import React from "react";
+import ToggleBlog from "./ToggleBlog";
 
-const Blogs = ({ blogs }) => {
+const Blogs = ({ blogs, increaseLikes, handleDeleteClick }) => {
   return (
     <VStack
       divider={<StackDivider />}
@@ -16,29 +16,14 @@ const Blogs = ({ blogs }) => {
       justifySelf={"center"}
     >
       {blogs.map((blog) => (
-        <VStack key={blog.id} justifySelf={"left"} alignItems={"left"}>
-          <Box>
-            <Text>
-              {" "}
-              <b>Blog Title:</b> {blog.title}
-            </Text>
-          </Box>
-          <Box>
-            <Text>
-              {" "}
-              <b>Author</b>: {blog.author}
-            </Text>
-          </Box>
-          <Box>
-            <Text>
-              {" "}
-              <b>URL:</b>{" "}
-              <Link href={blog.url} isExternal>
-                <ExternalLinkIcon mx={"2px"} />
-              </Link>
-            </Text>
-          </Box>
-        </VStack>
+        <ToggleBlog
+          key={blog.id}
+          blog={blog}
+          increaseLikes={increaseLikes}
+          handleDeleteClick={handleDeleteClick}
+        >
+          {""}
+        </ToggleBlog>
       ))}
     </VStack>
   );
