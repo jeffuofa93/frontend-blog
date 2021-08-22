@@ -36,6 +36,7 @@ const AddBlog = ({ createBlog }) => {
         <InputGroup>
           <InputLeftAddon children="title:" />
           <Input
+            id="title"
             type="text"
             value={newBlog.title}
             variant={"filled"}
@@ -46,6 +47,7 @@ const AddBlog = ({ createBlog }) => {
         <InputGroup>
           <InputLeftAddon children="author:" />
           <Input
+            id="author"
             type="text"
             value={newBlog.author}
             variant={"filled"}
@@ -56,6 +58,7 @@ const AddBlog = ({ createBlog }) => {
         <InputGroup>
           <InputLeftAddon children="url:" />
           <Input
+            id="url"
             type="text"
             value={newBlog.url}
             variant={"filled"}

@@ -10,7 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { FaArrowUp } from "react-icons/all";
+import { ArrowUpIcon } from "@chakra-ui/icons";
 import AlertButton from "./AlertButton";
 
 const ToggleBlog = (props) => {
@@ -18,59 +18,60 @@ const ToggleBlog = (props) => {
   const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
 
-  // console.log(props.user);
-
   const toggleVisibility = () => {
     setVisible(!visible);
   };
 
   return (
     <div>
-      <div style={hideWhenVisible}>
-        <HStack justifySelf={"left"} alignItems={"left"}>
-          <Text>{props.blog.title}</Text>
+      <PlainView
+        hideWhenVisible={hideWhenVisible}
+        title={props.blog.title}
+        toggleVisibility={toggleVisibility}
+      />
+      <ExpandedView
+        showWhenVisible={showWhenVisible}
+        toggleVisibility={toggleVisibility}
+        blog={props.blog}
+        handleDeleteClick={props.handleDeleteClick}
+        increaseLikes={props.increaseLikes}
+      />
+    </div>
+  );
+};
+
+const PlainView = ({ hideWhenVisible, toggleVisibility, title }) => {
+  return (
+    <div style={hideWhenVisible}>
+      <HStack justifySelf={"left"} alignItems={"left"}>
+        <Text>{title}</Text>
+        <Spacer />
+        <ToggleButton label={"View"} toggleVisibility={toggleVisibility} />
+      </HStack>
+    </div>
+  );
+};
+
+const ExpandedView = ({
+  showWhenVisible,
+  blog,
+  toggleVisibility,
+  increaseLikes,
+  handleDeleteClick,
+}) => {
+  return (
+    <div style={showWhenVisible} className="expandedBlog">
+      <VStack alignItems={"left"}>
+        <HStack>
+          <BlogLine label={"Title"} content={blog.title} />
           <Spacer />
-          <ToggleButton label={"View"} toggleVisibility={toggleVisibility} />
+          <ToggleButton label={"Hide"} toggleVisibility={toggleVisibility} />
         </HStack>
-      </div>
-      <div style={showWhenVisible}>
-        <VStack alignItems={"left"}>
-          <HStack>
-            <BlogLine label={"Title"} content={props.blog.title} />
-            <Spacer />
-            <ToggleButton label={"Hide"} toggleVisibility={toggleVisibility} />
-          </HStack>
-          <BlogLine label={"Author"} content={props.blog.author} />
-          <HStack>
-            <Box>
-              <Text>
-                <b>Likes: </b>
-                {props.blog.likes}
-              </Text>
-            </Box>
-            <IconButton
-              aria-label="temp"
-              icon={<FaArrowUp />}
-              onClick={() => props.increaseLikes(props.blog.id)}
-            />
-          </HStack>
-          <BlogLine label={"User"} content={props.blog.user.name} />
-          <Box>
-            <Text>
-              <b>URL: </b>
-              <Link href={props.blog.url} isExternal>
-                <ExternalLinkIcon mx={"2px"} />
-              </Link>
-            </Text>
-          </Box>
-          <Box>
-            <AlertButton
-              blog={props.blog}
-              handleDeleteClick={props.handleDeleteClick}
-            />
-          </Box>
-        </VStack>
-      </div>
+        <BlogLine label={"Author"} content={blog.author} />
+        <Likes blog={blog} increaseLikes={increaseLikes} />
+        <BlogLine label={"User"} content={blog.user.name} />
+        <URL blog={blog} handleDeleteClick={handleDeleteClick} />
+      </VStack>
     </div>
   );
 };
@@ -97,6 +98,43 @@ const ToggleButton = ({ label, toggleVisibility }) => {
       >
         {label}
       </Button>
+    </>
+  );
+};
+
+const Likes = ({ blog, increaseLikes }) => {
+  return (
+    <HStack>
+      <Box>
+        <Text>
+          <b>Likes: </b>
+          {blog.likes}
+        </Text>
+      </Box>
+      <IconButton
+        className="likeButton"
+        aria-label="temp"
+        icon={<ArrowUpIcon />}
+        onClick={() => increaseLikes(blog.id)}
+      />
+    </HStack>
+  );
+};
+
+const URL = ({ blog, handleDeleteClick }) => {
+  return (
+    <>
+      <Box>
+        <Text>
+          <b>URL: </b>
+          <Link href={blog.url} isExternal>
+            <ExternalLinkIcon mx={"2px"} />
+          </Link>
+        </Text>
+      </Box>
+      <Box>
+        <AlertButton blog={blog} handleDeleteClick={handleDeleteClick} />
+      </Box>
     </>
   );
 };
