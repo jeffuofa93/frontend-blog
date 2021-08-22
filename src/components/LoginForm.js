@@ -26,6 +26,7 @@ const LoginForm = (props) => {
         <InputGroup>
           <InputLeftAddon children="username:" />
           <Input
+            id="username"
             type="text"
             value={username}
             name={"Username"}
@@ -35,13 +36,14 @@ const LoginForm = (props) => {
         <InputGroup>
           <InputLeftAddon children="password:" />
           <Input
+            id="password"
             type="password"
             value={password}
             name={"Password"}
             onChange={({ target }) => setPassword(target.value)}
           />
         </InputGroup>
-        <Button type="submit" colorScheme={"pink"} px={8}>
+        <Button id="loginButton" type="submit" colorScheme={"pink"} px={8}>
           login
         </Button>
       </VStack>

@@ -84,9 +84,7 @@ const App = () => {
   };
 
   const handleDeleteClick = async (deleteBlog) => {
-    // if (!window.confirm(`Delete ${deleteBlog.name}?`)) return;
     try {
-      await blogService.remove(deleteBlog.id);
       await blogService.remove(deleteBlog.id);
       setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
     } catch (exception) {

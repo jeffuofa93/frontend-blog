@@ -66,7 +66,13 @@ const AddBlog = ({ createBlog }) => {
             name="url"
           />
         </InputGroup>
-        <Button type="submit" colorScheme={"pink"} px={8} alignSelf={"left"}>
+        <Button
+          id="addBlogButton"
+          type="submit"
+          colorScheme={"pink"}
+          px={8}
+          alignSelf={"left"}
+        >
           add blog
         </Button>
       </VStack>

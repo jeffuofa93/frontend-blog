@@ -17,6 +17,7 @@ const Blogs = ({ blogs, increaseLikes, handleDeleteClick }) => {
     >
       {blogs.map((blog) => (
         <ToggleBlog
+          className="blogContainer"
           key={blog.id}
           blog={blog}
           increaseLikes={increaseLikes}

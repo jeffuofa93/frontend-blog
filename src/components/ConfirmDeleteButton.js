@@ -9,7 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-const AlertButton = ({ handleDeleteClick, blog }) => {
+const ConfirmDeleteButton = ({ handleDeleteClick, blog }) => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
@@ -21,7 +21,11 @@ const AlertButton = ({ handleDeleteClick, blog }) => {
 
   return (
     <>
-      <Button colorScheme="red" onClick={() => setIsOpen(true)}>
+      <Button
+        className="outerDeleteButton"
+        colorScheme="red"
+        onClick={() => setIsOpen(true)}
+      >
         Delete Blog
       </Button>
 
@@ -46,6 +50,7 @@ const AlertButton = ({ handleDeleteClick, blog }) => {
                 colorScheme="red"
                 onClick={() => handleClick(handleDeleteClick, blog)}
                 ml={3}
+                id="confirmDeleteButton"
               >
                 Delete
               </Button>
@@ -57,4 +62,4 @@ const AlertButton = ({ handleDeleteClick, blog }) => {
   );
 };
 
-export default AlertButton;
+export default ConfirmDeleteButton;

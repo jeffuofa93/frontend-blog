@@ -7,7 +7,13 @@ const Notification = ({ message, color }) => {
   }
 
   return (
-    <Badge colorScheme={color.toString()} p="4" m="4" borderRadius="lg">
+    <Badge
+      colorScheme={color.toString()}
+      p="4"
+      m="4"
+      borderRadius="lg"
+      id="alertMessage"
+    >
       {message}
     </Badge>
   );

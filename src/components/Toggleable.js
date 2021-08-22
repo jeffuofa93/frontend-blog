@@ -24,7 +24,9 @@ const Togglable = React.forwardRef(
     return (
       <VStack>
         <div style={hideWhenVisible}>
-          <Button onClick={toggleVisibility}>{buttonLabel}</Button>
+          <Button onClick={toggleVisibility} id="createBlogButton">
+            {buttonLabel}
+          </Button>
         </div>
         <div style={showWhenVisible} align={"center"}>
           {children}

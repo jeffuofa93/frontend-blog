@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { ArrowUpIcon } from "@chakra-ui/icons";
-import AlertButton from "./AlertButton";
+import ConfirmDeleteButton from "./ConfirmDeleteButton";
 
 const ToggleBlog = (props) => {
   const [visible, setVisible] = useState(false);
@@ -23,7 +23,7 @@ const ToggleBlog = (props) => {
   };
 
   return (
-    <div>
+    <div className="blogContainer">
       <PlainView
         hideWhenVisible={hideWhenVisible}
         title={props.blog.title}
@@ -70,7 +70,13 @@ const ExpandedView = ({
         <BlogLine label={"Author"} content={blog.author} />
         <Likes blog={blog} increaseLikes={increaseLikes} />
         <BlogLine label={"User"} content={blog.user.name} />
-        <URL blog={blog} handleDeleteClick={handleDeleteClick} />
+        <URL blog={blog} />
+        <Box>
+          <ConfirmDeleteButton
+            blog={blog}
+            handleDeleteClick={handleDeleteClick}
+          />
+        </Box>
       </VStack>
     </div>
   );
@@ -95,6 +101,7 @@ const ToggleButton = ({ label, toggleVisibility }) => {
         px={8}
         alignSelf={"left"}
         onClick={toggleVisibility}
+        className="expandOrCollapseBlogButton"
       >
         {label}
       </Button>
@@ -106,7 +113,7 @@ const Likes = ({ blog, increaseLikes }) => {
   return (
     <HStack>
       <Box>
-        <Text>
+        <Text className="numberOfLikes">
           <b>Likes: </b>
           {blog.likes}
         </Text>
@@ -121,7 +128,7 @@ const Likes = ({ blog, increaseLikes }) => {
   );
 };
 
-const URL = ({ blog, handleDeleteClick }) => {
+const URL = ({ blog }) => {
   return (
     <>
       <Box>
@@ -131,9 +138,6 @@ const URL = ({ blog, handleDeleteClick }) => {
             <ExternalLinkIcon mx={"2px"} />
           </Link>
         </Text>
-      </Box>
-      <Box>
-        <AlertButton blog={blog} handleDeleteClick={handleDeleteClick} />
       </Box>
     </>
   );
